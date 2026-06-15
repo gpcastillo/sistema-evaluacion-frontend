@@ -10,6 +10,7 @@ const FormularioICI = ({ empresaId, empresaNombre, onResultado }) => {
         nuevos_canales_venta: '', marketing_digital: '', campanas_innovadoras: '',
         horas_capacitacion_innovacion: '', alianzas_universidades: '', cultura_innovadora: ''
     });
+    
     const [loading, setLoading] = useState(false);
     const [resultado, setResultado] = useState(null);
     const [guardando, setGuardando] = useState(false);

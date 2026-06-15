@@ -5,21 +5,12 @@ import 'jspdf-autotable';
 
 const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
     const [formData, setFormData] = useState({
-        ingresos: '',
-        ingresos_anterior: '',
-        utilidad: '',
-        utilidad_anterior: '',
-        csat: '',
-        nps: '',
-        retencion_clientes: '',
-        cumplimiento_plazos: '',
-        eficiencia: '',
-        indice_calidad: '',
-        rotacion_personal: '',
-        horas_capacitacion: '',
-        compromiso: ''
+        ingresos: '', ingresos_anterior: '', utilidad: '', utilidad_anterior: '',
+        csat: '', nps: '', retencion_clientes: '',
+        cumplimiento_plazos: '', eficiencia: '', indice_calidad: '',
+        rotacion_personal: '', horas_capacitacion: '', compromiso: ''
     });
-    
+
     const [loading, setLoading] = useState(false);
     const [resultado, setResultado] = useState(null);
     const [guardando, setGuardando] = useState(false);
@@ -49,15 +40,11 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
         }
         setGuardando(true);
         try {
-            await guardarIRO({ 
-                empresa_id: empresaId, 
-                ...formData, 
-                resultados: resultado 
-            });
+            await guardarIRO({ empresa_id: empresaId, ...formData, resultados: resultado });
             alert('✅ Evaluación IRO guardada exitosamente');
         } catch (error) {
             console.error('Error al guardar:', error);
-            alert('❌ Error al guardar la evaluación: ' + (error.response?.data?.error || error.message));
+            alert('❌ Error al guardar la evaluación');
         }
         setGuardando(false);
     };
@@ -68,14 +55,17 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             return;
         }
 
+        // Crear documento
         const doc = new jsPDF();
         
+        // Títulos
         doc.setFontSize(18);
         doc.text('Informe de Evaluación IRO', 14, 20);
         doc.setFontSize(12);
         doc.text(`Empresa: ${empresaNombre || 'N/A'}`, 14, 35);
         doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 45);
         
+        // Tabla de datos ingresados
         doc.setFontSize(14);
         doc.text('Datos ingresados:', 14, 60);
         
@@ -103,6 +93,8 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             headStyles: { fillColor: [41, 128, 185] }
         });
         
+        // Tabla de resultados
+        
         const finalY = doc.lastAutoTable.finalY + 10;
         doc.setFontSize(14);
         doc.text('Resultados del IRO:', 14, finalY);
@@ -123,6 +115,7 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             headStyles: { fillColor: [46, 204, 113] }
         });
         
+        // Guardar PDF
         const nombreLimpio = (empresaNombre || 'empresa').replace(/[^a-z0-9]/gi, '_').toLowerCase();
         doc.save(`IRO_${nombreLimpio}_${Date.now()}.pdf`);
     };
@@ -132,22 +125,19 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             <h3>📊 Evaluación IRO - Rendimiento Organizacional</h3>
             <form onSubmit={handleSubmit}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
-                    <div><label><strong>Ingresos actuales:</strong></label><br/><input type="number" name="ingresos" placeholder="Ej: 150000" onChange={handleChange} style={{ width: '100%', padding: '5px' }} required/></div>
-                    <div><label><strong>Ingresos anterior:</strong></label><br/><input type="number" name="ingresos_anterior" placeholder="Ej: 100000" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Utilidad actual:</strong></label><br/><input type="number" name="utilidad" placeholder="Ej: 30000" onChange={handleChange} style={{ width: '100%', padding: '5px' }} required/></div>
-                    <div><label><strong>Utilidad anterior:</strong></label><br/><input type="number" name="utilidad_anterior" placeholder="Ej: 20000" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    
-                    <div><label><strong>CSAT (1-5):</strong></label><br/><input type="number" step="0.1" name="csat" placeholder="Ej: 4.5" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>NPS (-100 a 100):</strong></label><br/><input type="number" name="nps" placeholder="Ej: 70" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Retención clientes %:</strong></label><br/><input type="number" name="retencion_clientes" placeholder="Ej: 85" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Cumplimiento plazos %:</strong></label><br/><input type="number" name="cumplimiento_plazos" placeholder="Ej: 90" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    
-                    <div><label><strong>Eficiencia %:</strong></label><br/><input type="number" name="eficiencia" placeholder="Ej: 85" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Índice calidad %:</strong></label><br/><input type="number" name="indice_calidad" placeholder="Ej: 95" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Rotación personal %:</strong></label><br/><input type="number" name="rotacion_personal" placeholder="Ej: 10" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    <div><label><strong>Horas capacitación:</strong></label><br/><input type="number" name="horas_capacitacion" placeholder="Ej: 40" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
-                    
-                    <div><label><strong>Compromiso %:</strong></label><br/><input type="number" name="compromiso" placeholder="Ej: 85" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Ingresos actuales:</strong></label><br/><input type="number" name="ingresos" onChange={handleChange} style={{ width: '100%', padding: '5px' }} required/></div>
+                    <div><label><strong>Ingresos anterior:</strong></label><br/><input type="number" name="ingresos_anterior" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Utilidad actual:</strong></label><br/><input type="number" name="utilidad" onChange={handleChange} style={{ width: '100%', padding: '5px' }} required/></div>
+                    <div><label><strong>Utilidad anterior:</strong></label><br/><input type="number" name="utilidad_anterior" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>CSAT (1-5):</strong></label><br/><input type="number" step="0.1" name="csat" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>NPS (-100 a 100):</strong></label><br/><input type="number" name="nps" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Retención clientes %:</strong></label><br/><input type="number" name="retencion_clientes" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Cumplimiento plazos %:</strong></label><br/><input type="number" name="cumplimiento_plazos" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Eficiencia %:</strong></label><br/><input type="number" name="eficiencia" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Índice calidad %:</strong></label><br/><input type="number" name="indice_calidad" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Rotación personal %:</strong></label><br/><input type="number" name="rotacion_personal" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Horas capacitación:</strong></label><br/><input type="number" name="horas_capacitacion" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
+                    <div><label><strong>Compromiso %:</strong></label><br/><input type="number" name="compromiso" onChange={handleChange} style={{ width: '100%', padding: '5px' }}/></div>
                 </div>
                 <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
                     <button type="submit" disabled={loading} style={{ padding: '10px 20px', backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
