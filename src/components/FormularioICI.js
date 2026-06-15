@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { calcularICI, guardarICI } from '../services/api';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 
 const FormularioICI = ({ empresaId, empresaNombre, onResultado }) => {
     const [formData, setFormData] = useState({

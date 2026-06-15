@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { calcularIRO, guardarIRO } from '../services/api';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 
 const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
     const [formData, setFormData] = useState({
@@ -95,7 +95,7 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             ['Compromiso %', formData.compromiso || '0'],
         ];
         
-        autoTable(doc, {
+        doc.autoTable({
             startY: 70,
             head: [['Indicador', 'Valor']],
             body: datosTabla,
@@ -115,7 +115,7 @@ const FormularioIRO = ({ empresaId, empresaNombre, onResultado }) => {
             ['IRO TOTAL', `${resultado.iro_total} - ${resultado.iro_total >= 70 ? 'Desempeño Excelente' : resultado.iro_total >= 50 ? 'Desempeño Bueno' : 'Desempeño Mejorable'}`]
         ];
         
-        autoTable(doc, {
+        doc.autoTable({
             startY: finalY + 5,
             head: [['Dimensión', 'Puntaje']],
             body: resultadosTabla,
